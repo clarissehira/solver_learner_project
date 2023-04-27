@@ -37,6 +37,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 class LessonViewSet(viewsets.ModelViewSet):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    permission_classes = [IsAuthenticated & (IsInstructorUser | IsStudentUser)]
     #permission_classes = [CanViewLesson, CanViewLessonByEnrolledStudent]
 
 
@@ -56,6 +57,7 @@ class LessonViewSet(viewsets.ModelViewSet):
 class EnrollmentViewSet(viewsets.ModelViewSet):
     queryset = Enrollment.objects.all()
     serializer_class = EnrollmentSerializer
+    permission_classes = [IsAuthenticated & (IsInstructorUser | IsStudentUser)]
     # permission_classes = [IsAuthenticated, IsInstructorUser]
 
     # def perform_create(self, serializer):
@@ -72,6 +74,8 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
 class ProgressViewSet(viewsets.ModelViewSet):
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
+    permission_classes = [IsAuthenticated & (IsInstructorUser | IsStudentUser)]
+
 
 
     def get_permissions(self):
