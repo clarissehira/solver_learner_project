@@ -74,7 +74,7 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
 class ProgressViewSet(viewsets.ModelViewSet):
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
-    permission_classes = [IsAuthenticated & (IsInstructorUser | IsStudentUser)]
+   
 
 
 

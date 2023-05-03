@@ -78,6 +78,7 @@ class RegisterStudentSerializer(serializers.ModelSerializer):
 
         user.set_password(password)
         user.save()
+        
 
         student = Student.objects.create(user=user)
         student.first_name = user.first_name

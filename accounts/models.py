@@ -37,7 +37,7 @@ class Student(models.Model):
     first_name=models.CharField(max_length=40,blank=True)
     last_name=models.CharField(max_length=40,blank=True)
     email=models.EmailField()
-    username = models.CharField(max_length=70)
+    
        
     
     def __str__(self):
