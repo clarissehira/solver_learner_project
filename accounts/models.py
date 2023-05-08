@@ -21,7 +21,7 @@ class Instructor(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="instructor")
     first_name= models.CharField(max_length=70, blank=True)
     last_name = models.CharField(max_length=70, blank=True)
-    username = models.CharField(max_length=70, unique=True)
+    username = models.CharField(max_length=70, default="")
     phone=models.CharField(max_length=40, blank=True)
     email=models.EmailField()
     course=models.CharField(max_length=30, blank=True)     

@@ -1,17 +1,25 @@
 
 
-from django.urls import path
+from django.urls import path,re_path
 
 from accounts.views import  ChangePasswordView, InstructorRegisterView, LoginView, LogoutView, StudentRegisterView 
 
 
+
+
+
+
+
+
 urlpatterns = [
-  path('register/instructor/',InstructorRegisterView.as_view(), name="insructorregister"),
+  path('register/instructor/',InstructorRegisterView.as_view(), name="instructorregister"),
   path('register/student/',StudentRegisterView.as_view(), name="studentregister"),
   path('login/',LoginView.as_view(),name="login"),
   path('logout/',LogoutView.as_view(),name="logout"),
   path('change_password/', ChangePasswordView.as_view()),
-
+ 
+  
+   
 ]
 
 # from django.urls import path, include

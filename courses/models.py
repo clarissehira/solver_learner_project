@@ -74,4 +74,4 @@ class Submission(models.Model):
     
     
     def __str__(self):
-        return f"{self.student.name} - {self.assignment.title}"
+        return f"{self.student.first_name} - {self.assignment.name}"
