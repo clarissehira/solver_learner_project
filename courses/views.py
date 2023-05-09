@@ -6,6 +6,7 @@ from .models import Assignment, Course, Enrollment, Lesson, Progress, Submission
 from .serializers import AssignmentSerializer, CourseSerializer, EnrollmentSerializer, LessonSerializer, ProgressSerializer, SubmissionSerializer
 from accounts.permissions import (CanViewAssignmentByEnrolledStudent, CanViewLesson, CanViewLessonByEnrolledStudent, CanViewLessonByInstructor, CanViewStudentProgress, IsCourseInstructor,  IsStudentProgressOwner, IsStudentUser, CanEnrollInCourse, CanViewCourseAssignment, CanSubmitAssignment,
  IsInstructorUser)
+from drf_yasg.utils import swagger_auto_schema
 
 
 
@@ -14,6 +15,30 @@ class CourseViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated & (IsInstructorUser | IsStudentUser)]
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    
+    @swagger_auto_schema(
+        responses={200: CourseSerializer(many=True)}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        responses={200: CourseSerializer}
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        responses={200: CourseSerializer}
+    )
+    def enroll(self, request, *args, **kwargs):
+        return super().enroll(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        responses={200: CourseSerializer}
+    )
+    def submit_assignment(self, request, *args, **kwargs):
+        return super().submit_assignment(request, *args, **kwargs)
 
     def get_permissions(self):
         if self.action == 'list':
@@ -40,7 +65,17 @@ class LessonViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated & (IsInstructorUser | IsStudentUser)]
     #permission_classes = [CanViewLesson, CanViewLessonByEnrolledStudent]
 
+    @swagger_auto_schema(
+        responses={200: LessonSerializer(many=True)}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
+    @swagger_auto_schema(
+        responses={200: LessonSerializer}
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     def get_permissions(self):
         if self.action == 'list':
@@ -70,12 +105,54 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
     #     else:
     #         permission_classes = [IsAuthenticated, IsInstructorUser]
     #     return [permission() for permission in permission_classes]
+    
+    @swagger_auto_schema(
+        responses={200: EnrollmentSerializer(many=True)}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        responses={200: EnrollmentSerializer}
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        request_body=EnrollmentSerializer,
+        responses={201: EnrollmentSerializer}
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        request_body=EnrollmentSerializer,
+        responses={200: EnrollmentSerializer}
+    )
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        responses={204: None}
+    )
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
 
 class ProgressViewSet(viewsets.ModelViewSet):
     queryset = Progress.objects.all()
     serializer_class = ProgressSerializer
    
+    @swagger_auto_schema(
+        responses={200: ProgressSerializer(many=True)}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
+    @swagger_auto_schema(
+        responses={200: ProgressSerializer}
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 
     def get_permissions(self):
@@ -96,6 +173,39 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     serializer_class = AssignmentSerializer
     permission_classes = [IsStudentUser | IsInstructorUser, CanViewAssignmentByEnrolledStudent]
 
+
+
+    @swagger_auto_schema(
+        responses={200: AssignmentSerializer(many=True)}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        responses={200: AssignmentSerializer}
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        request_body=AssignmentSerializer,
+        responses={201: AssignmentSerializer}
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        request_body=AssignmentSerializer,
+        responses={200: AssignmentSerializer}
+    )
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        responses={204: None}
+    )
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
     def get_permissions(self):
         if self.action == 'list':
             permission_classes = [IsAuthenticated, IsStudentUser | IsInstructorUser]
@@ -112,7 +222,24 @@ class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all()
     serializer_class = SubmissionSerializer
     permission_classes = [IsAuthenticated & (IsInstructorUser | IsStudentUser)]
+    @swagger_auto_schema(
+        request_body=SubmissionSerializer,
+        responses={201: SubmissionSerializer}
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
+    @swagger_auto_schema(
+        responses={200: SubmissionSerializer(many=True)}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        responses={200: SubmissionSerializer}
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
     def get_permissions(self):
         if self.action in ['create']:
             permission_classes = [IsAuthenticated, IsStudentUser]
