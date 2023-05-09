@@ -11,6 +11,8 @@ from .serializers import(UserSerializer,RegisterInstructorSerializer,
 RegisterStudentSerializer) 
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 
@@ -52,6 +54,22 @@ class StudentRegisterView(generics.GenericAPIView):
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
+    
+    
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'username': openapi.Schema(type=openapi.TYPE_STRING),
+                'password': openapi.Schema(type=openapi.TYPE_STRING)
+            }
+        ),
+        responses={
+            200: 'OK',
+            401: 'Unauthorized',
+            400: 'Bad Request'
+        }
+    )
 
     def post(self, request):
         username = request.data.get('username')
@@ -73,6 +91,13 @@ class LoginView(APIView):
 class LogoutView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    
+    @swagger_auto_schema(
+        responses={
+            200: 'OK',
+            401: 'Unauthorized'
+        }
+    )
 
     def post(self, request, format=None):
         # Delete the user's token
@@ -84,6 +109,22 @@ class LogoutView(APIView):
 class ChangePasswordView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    
+    
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'old_password': openapi.Schema(type=openapi.TYPE_STRING),
+                'new_password1': openapi.Schema(type=openapi.TYPE_STRING),
+                'new_password2': openapi.Schema(type=openapi.TYPE_STRING)
+            }
+        ),
+        responses={
+            200: 'OK',
+            400: 'Bad Request'
+        }
+    )
 
     def post(self, request, format=None):
         user = request.user
