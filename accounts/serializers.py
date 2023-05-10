@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from accounts.models import User, Student,Instructor
 
+from django.utils.encoding import force_str
+from django.utils.http  import urlsafe_base64_decode, urlsafe_base64_encode
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from rest_framework.response import Response
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -86,3 +91,48 @@ class RegisterStudentSerializer(serializers.ModelSerializer):
         student.email = user.email
         student.save()
         return user
+
+
+#reset password by email
+
+class ResetPasswordEmailRequestSerializer(serializers.Serializer):
+    email=serializers.EmailField(min_length=5)
+
+    class Meta:
+        fields= ['email']
+    
+
+class SetNewPasswordSerializer(serializers.Serializer):
+    newpassword= serializers.CharField(min_length=6, max_length= 64, write_only= True)
+    uidb64= serializers.CharField(min_length= 1, write_only= True )
+    token= serializers.CharField(min_length= 1, write_only= True )
+
+    class Meta:
+        fields= '_all_'
+    
+    def validate(self, attrs):
+        try:
+            newpassword= attrs.get('newpassword')
+            token= attrs.get('token')
+            uidb64= attrs.get('uidb64') 
+            
+            print(f"token: {token}")
+            print(f"uidb64: {uidb64}")           
+            
+            id= force_str(urlsafe_base64_decode(uidb64))
+            user= User.objects.get(id=id)
+            
+            print(f"User: {user}")
+            
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                raise exceptions.AuthenticationFailed({'Error':'The Reset link is invalid, It was used before!'}, 401)
+            
+            user.set_password(newpassword)
+            user.save()
+            return Response({'user': user})                                      
+        except Exception as e: 
+            
+            print(f"error: {e} ") 
+            
+            raise exceptions.AuthenticationFailed({'Error':'The Reset link is invalid !' }, 401)
+
